@@ -78,8 +78,9 @@ function Index() {
   };
 
   return (
-    <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col px-4">
+    <div className="mx-auto flex h-[100dvh] w-full max-w-3xl flex-col overflow-hidden px-4">
       <Toaster position="top-center" />
+
 
       <header className="flex items-center gap-3 py-6">
         <img
