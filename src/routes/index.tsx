@@ -103,8 +103,8 @@ function Index() {
       </header>
 
 
-      <Conversation className="flex-1">
-        <ConversationContent className="gap-6">
+      <Conversation className="min-h-0 flex-1">
+        <ConversationContent className="gap-6 px-0 pb-2">
           {messages.length === 0 ? (
             <ConversationEmptyState
               icon={<Radar className="size-8 text-primary" />}
@@ -127,50 +127,30 @@ function Index() {
             </ConversationEmptyState>
           ) : null}
 
-          {messages.map((message) => (
-            <Message key={message.id} from={message.role}>
-              <MessageContent>
-                {message.parts.map((part, index) => {
-                  if (part.type === "text") {
-                    return (
-                      <MessageResponse key={index}>{part.text}</MessageResponse>
-                    );
-                  }
-                  if (part.type.startsWith("tool-")) {
-                    const toolPart = part as never as {
-                      type: string;
-                      state: never;
-                      input?: unknown;
-                      output?: unknown;
-                      errorText?: string;
-                    };
-                    return (
-                      <Tool key={index} defaultOpen={false} className="my-2">
-                        <ToolHeader type={toolPart.type as never} state={toolPart.state} />
-                        <ToolContent>
-                          <ToolInput input={toolPart.input} />
-                          <ToolOutput
-                            output={toolPart.output as never}
-                            errorText={toolPart.errorText as never}
-                          />
-                        </ToolContent>
-                      </Tool>
-                    );
-                  }
-                  return null;
-                })}
-              </MessageContent>
-            </Message>
-          ))}
+          {messages.map((message) => {
+            const textParts = message.parts.filter((part) => part.type === "text");
+            if (textParts.length === 0) return null;
+            return (
+              <Message key={message.id} from={message.role}>
+                <MessageContent>
+                  {textParts.map((part, index) => (
+                    <MessageResponse key={index}>
+                      {(part as { text: string }).text}
+                    </MessageResponse>
+                  ))}
+                </MessageContent>
+              </Message>
+            );
+          })}
 
-          {status === "submitted" ? (
+          {busy ? (
             <Shimmer className="text-sm">Lendo os dados da partida...</Shimmer>
           ) : null}
         </ConversationContent>
         <ConversationScrollButton />
       </Conversation>
 
-      <div className="sticky bottom-0 bg-transparent pb-5 pt-3">
+      <div className="shrink-0 border-t border-border/60 bg-background pb-[max(env(safe-area-inset-bottom),0.75rem)] pt-3">
         <PromptInput
           onSubmit={(message, event) => {
             event.preventDefault();
@@ -188,9 +168,10 @@ function Index() {
           </PromptInputFooter>
         </PromptInput>
         <p className="mt-2 text-center text-[11px] text-muted-foreground">
-          Conteúdo informativo. Nada aqui é garantia de resultado — aposte com responsabilidade.
+          Conteúdo informativo. Nada aqui é garantia — aposte com responsabilidade.
         </p>
       </div>
+
     </div>
   );
 }
