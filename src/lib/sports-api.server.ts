@@ -217,7 +217,7 @@ export async function getTeamRecentStats(teamId: number, last = 6, venue?: "home
 }
 
 /** Desfalques (lesões/suspensões) de uma partida ou de um time — futebol. */
-export async function getInjuries(params: { fixtureId?: number; teamId?: number; season?: number }) {
+export async function getInjuries(params: { fixtureId?: number | undefined; teamId?: number | undefined; season?: number | undefined }) {
   const query: Record<string, string> = {};
   if (params.fixtureId) query["fixture"] = String(params.fixtureId);
   if (params.teamId) query["team"] = String(params.teamId);
