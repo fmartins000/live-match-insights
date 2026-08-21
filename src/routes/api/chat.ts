@@ -118,6 +118,57 @@ export const Route = createFileRoute("/api/chat")({
               execute: async ({ id_time_casa, id_time_fora }) =>
                 wrap(() => getHeadToHead(id_time_casa, id_time_fora)),
             }),
+            contexto_da_partida: tool({
+              description:
+                "Contexto de uma partida de futebol: liga, rodada, se é mata-mata, estádio, cidade, árbitro, IDs dos times e placar.",
+              inputSchema: z.object({ id_partida: z.number() }),
+              execute: async ({ id_partida }) => wrap(() => getFixtureContext(id_partida)),
+            }),
+            medias_recentes_do_time: tool({
+              description:
+                "Médias reais dos últimos jogos de um time de futebol: escanteios feitos/cedidos, finalizações, posse, xG. Use recorte casa/fora.",
+              inputSchema: z.object({
+                id_time: z.number(),
+                ultimos: z.number().optional().describe("Quantidade de jogos (padrão 6)"),
+                mando: z.enum(["home", "away"]).optional().describe("Recorte só em casa ou só fora"),
+              }),
+              execute: async ({ id_time, ultimos, mando }) =>
+                wrap(() => getTeamRecentStats(id_time, ultimos ?? 6, mando)),
+            }),
+            estatisticas_da_temporada: tool({
+              description:
+                "Estatísticas de temporada de um time de futebol numa liga: médias de gols feitos/sofridos em casa e fora, minutos dos gols, formações usadas, cartões, forma.",
+              inputSchema: z.object({
+                id_time: z.number(),
+                id_liga: z.number(),
+                temporada: z.number(),
+              }),
+              execute: async ({ id_time, id_liga, temporada }) =>
+                wrap(() => getTeamSeasonStats(id_time, id_liga, temporada)),
+            }),
+            escalacoes: tool({
+              description: "Escalações, esquema tático e técnico de uma partida de futebol.",
+              inputSchema: z.object({ id_partida: z.number() }),
+              execute: async ({ id_partida }) => wrap(() => getLineups(id_partida)),
+            }),
+            desfalques: tool({
+              description: "Lesionados e suspensos de uma partida ou de um time de futebol.",
+              inputSchema: z.object({
+                id_partida: z.number().optional(),
+                id_time: z.number().optional(),
+                temporada: z.number().optional(),
+              }),
+              execute: async ({ id_partida, id_time, temporada }) =>
+                wrap(() =>
+                  getInjuries({ fixtureId: id_partida, teamId: id_time, season: temporada }),
+                ),
+            }),
+            tabela_da_liga: tool({
+              description:
+                "Classificação da liga com campanha separada em casa e fora — use para medir necessidade de resultado.",
+              inputSchema: z.object({ id_liga: z.number(), temporada: z.number() }),
+              execute: async ({ id_liga, temporada }) => wrap(() => getStandings(id_liga, temporada)),
+            }),
           },
         });
 
