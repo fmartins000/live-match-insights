@@ -82,25 +82,26 @@ function Index() {
       <Toaster position="top-center" />
 
 
-      <header className="flex items-center gap-3 py-6">
+      <header className="flex shrink-0 items-center gap-3 py-4">
         <img
           src={logo}
           alt="Radar Ao Vivo"
           width={512}
           height={512}
-          className="size-11 rounded-xl bg-card p-1.5 glow-card"
+          className="size-10 shrink-0 rounded-xl bg-card p-1.5 glow-card"
         />
-        <div>
-          <h1 className="text-lg font-semibold tracking-tight">Radar Ao Vivo</h1>
-          <p className="text-xs text-muted-foreground">
+        <div className="min-w-0">
+          <h1 className="truncate text-base font-semibold tracking-tight sm:text-lg">Radar Ao Vivo</h1>
+          <p className="truncate text-xs text-muted-foreground">
             Análise de partidas em tempo real, guiada por dados
           </p>
         </div>
-        <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs text-primary">
+        <span className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 px-2.5 py-1 text-[11px] text-primary">
           <span className="size-1.5 animate-pulse rounded-full bg-primary" />
           ao vivo
         </span>
       </header>
+
 
       <Conversation className="flex-1">
         <ConversationContent className="gap-6">
